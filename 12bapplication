@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// A BST node
+typedef struct Node {
+    int data;
+    struct Node *left, *right;
+} Node;
+
+struct Node* new_node(int x) {
+    struct Node* p = malloc(sizeof(struct Node));
+    p->data = x;
+    p->left = NULL;
+    p->right = NULL;
+    return p;
+}
+
+// Recursive function to insert a key into BST
+Node* insert(Node* root, int x) {
+    if (root == NULL)
+        return new_node(x);
+    if (x < root->data)
+        root->left = insert(root->left, x);
+    else if (x > root->data)
+        root->right = insert(root->right, x);
+    return root;
+}
+
+// Function to find k'th smallest element in BST
+void findKthSmallest(Node* root, int k, int* count) {
+    if (root == NULL || *count >= k) {
+        return;
+    }
+
+    // Recur on the left subtree
+    findKthSmallest(root->left, k, count);
+
+    // Increment count
+    (*count)++;
+
+    // If k'th smallest element is found, print it
+    if (*count == k) {
+        printf("K-th Smallest Element is %d\n", root->data);
+        return;
+    }
+
+    // Recur on the right subtree
+    findKthSmallest(root->right, k, count);
+}
+
+int main() {
+    Node* root = NULL;
+
+    while (1) {
+        int choice;
+        printf("1. Insert an element\n");
+        printf("2. Find k'th smallest element\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                int key;
+                printf("Enter the element to insert: ");
+                scanf("%d", &key);
+                root = insert(root, key); // Inserting the element into the BST
+                break;
+            case 2:
+                int k, count = 0;
+                printf("Enter the value of k: ");
+                scanf("%d", &k);
+                findKthSmallest(root, k, &count); // Find and print the k'th smallest element
+                break;
+            case 3:
+                exit(0); // Exit the program
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
